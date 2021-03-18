@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "D:\\Program Files\\2020.3.0f1\\Editor\\Data\\CGIncludes"
+		},
+		{
+			"path": "UnityShaderBook\\Shaders"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/*.mat": true,
+			"**/*.meta": true
+		}
+	}
+}
