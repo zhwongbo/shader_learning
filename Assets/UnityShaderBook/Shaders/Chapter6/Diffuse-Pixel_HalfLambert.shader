@@ -1,4 +1,4 @@
-Shader "Abel/Diffuse/Vertex-Level"
+Shader "Abel/UnityShaderBook/Diffuse-Pixel-HalfLambert"
 {
     Properties
     {
@@ -31,7 +31,8 @@ Shader "Abel/Diffuse/Vertex-Level"
             struct v2f
             {
                 float4 pos : SV_POSITION;
-                fixed3 color : COLOR;
+                float3 worldPos : TEXCOORD0;
+                float3 worldNormal : TEXCOORD1;
             };
 
 
@@ -39,21 +40,19 @@ Shader "Abel/Diffuse/Vertex-Level"
             {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
-                
-                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
-
-                float3 worldNormal = UnityObjectToWorldNormal(v.normal);
-                // float3 lightDir = normalize(WorldSpaceLightDir(v.vertex));
-                float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-                float3 worldLightDir = normalize(UnityWorldSpaceLightDir(worldPos));
-                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb *  saturate(dot(worldNormal, worldLightDir));
-                o.color = ambient + diffuse;
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                return fixed4(i.color, 1.0);
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+                float3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+                fixed halfLambert = 0.5 * dot(i.worldNormal, worldLightDir) + 0.5;
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb *  halfLambert;
+                fixed3 color = ambient + diffuse;
+                return fixed4(color, 1.0);
             }
             ENDCG
         }

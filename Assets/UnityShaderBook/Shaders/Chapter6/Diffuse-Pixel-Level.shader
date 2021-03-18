@@ -1,11 +1,8 @@
-Shader "Abel/Texture/Single Texture"
+Shader "Abel/UnityShaderBook/Diffuse-Pixel-Level"
 {
     Properties
     {
-        _MainTex("MainTex", 2D) = "white"{}
-        _Color("Color", Color) = (1, 1, 1, 1)
-        _Specular("Specular", Color) = (1, 1, 1, 1)
-        _Gloss("Gloss", Range(8.0, 256)) = 20
+        _Diffuse("Diffuse", Color) = (1, 1, 1, 1)
     }
 
     SubShader
@@ -23,18 +20,12 @@ Shader "Abel/Texture/Single Texture"
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
 
-            fixed4 _Specular;
-            fixed4 _Color;
-            float _Gloss;
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-            
+            fixed4 _Diffuse;
 
             struct appdata
             {
                 float4 vertex : POSITION;
                 float4 normal :NORMAL;
-                float2 texcoord : TEXCOORD0;
             };
 
             struct v2f
@@ -42,7 +33,6 @@ Shader "Abel/Texture/Single Texture"
                 float4 pos : SV_POSITION;
                 float3 worldPos : TEXCOORD0;
                 float3 worldNormal : TEXCOORD1;
-                float2 uv : TEXCOORD2;
             };
 
 
@@ -52,23 +42,16 @@ Shader "Abel/Texture/Single Texture"
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb; 
-
-                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
                 float3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
-                fixed3 diffuse = _LightColor0.rgb * albedo.rgb *  saturate(dot(i.worldNormal, worldLightDir));
-                
-                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
-                fixed3 halfDir = normalize(worldLightDir + viewDir);
-                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(i.worldNormal, halfDir)), _Gloss);
-
-                return fixed4(ambient + diffuse + specular, 1.0);
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb *  saturate(dot(i.worldNormal, worldLightDir));
+                fixed3 color = ambient + diffuse;
+                return fixed4(color, 1.0);
             }
             ENDCG
         }

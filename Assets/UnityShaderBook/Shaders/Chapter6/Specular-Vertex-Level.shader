@@ -1,4 +1,4 @@
-Shader "Abel/Specular/Vertex-Level"
+Shader "Abel/UnityShaderBook/Specular-Vertex-Level"
 {
     Properties
     {

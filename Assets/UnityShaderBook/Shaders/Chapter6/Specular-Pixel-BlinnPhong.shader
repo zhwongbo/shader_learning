@@ -1,8 +1,10 @@
-Shader "Abel/Diffuse/Pixel-Level"
+Shader "Abel/UnityShaderBook/Specular-Pixel-BlinnPhong"
 {
     Properties
     {
         _Diffuse("Diffuse", Color) = (1, 1, 1, 1)
+        _Specular("Specular", Color) = (1, 1, 1, 1)
+        _Gloss("Gloss", Range(8.0, 256)) = 20
     }
 
     SubShader
@@ -21,6 +23,8 @@ Shader "Abel/Diffuse/Pixel-Level"
             #include "Lighting.cginc"
 
             fixed4 _Diffuse;
+            fixed4 _Specular;
+            float _Gloss;
 
             struct appdata
             {
@@ -50,8 +54,12 @@ Shader "Abel/Diffuse/Pixel-Level"
                 fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
                 float3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
                 fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb *  saturate(dot(i.worldNormal, worldLightDir));
-                fixed3 color = ambient + diffuse;
-                return fixed4(color, 1.0);
+                
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(i.worldNormal, halfDir)), _Gloss);
+
+                return fixed4(ambient + diffuse + specular, 1.0);
             }
             ENDCG
         }
