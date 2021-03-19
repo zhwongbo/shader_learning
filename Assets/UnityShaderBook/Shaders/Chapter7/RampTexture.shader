@@ -1,8 +1,8 @@
-Shader "Abel/UnityShaderBook/Chapter7/Ramp Texture"
+Shader "Abel/UnityShaderBook/Chapter7/RampTexture"
 {
     Properties
     {
-        _MainTex("MainTex", 2D) = "white"{}
+        _Ramp("Ramp", 2D) = "white"{}
         _Color("Color", Color) = (1, 1, 1, 1)
         _Specular("Specular", Color) = (1, 1, 1, 1)
         _Gloss("Gloss", Range(8.0, 256)) = 20
@@ -23,18 +23,18 @@ Shader "Abel/UnityShaderBook/Chapter7/Ramp Texture"
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
 
-            fixed4 _Specular;
             fixed4 _Color;
+            fixed4 _Specular;
             float _Gloss;
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
-            
+
+            sampler2D _Ramp;
+            float4 _Ramp_ST;
 
             struct appdata
             {
                 float4 vertex : POSITION;
                 float4 normal :NORMAL;
-                float2 texcoord : TEXCOORD0;
+                float4 texcoord : TEXCOORD0;
             };
 
             struct v2f
@@ -52,21 +52,24 @@ Shader "Abel/UnityShaderBook/Chapter7/Ramp Texture"
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+                o.uv = TRANSFORM_TEX(v.texcoord, _Ramp);
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb; 
-
-                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                float3 worldNormal = normalize(i.worldNormal);
                 float3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
-                fixed3 diffuse = _LightColor0.rgb * albedo.rgb *  saturate(dot(i.worldNormal, worldLightDir));
+                fixed halfLambert = 0.5 * dot(worldNormal, worldLightDir) + 0.5;
+                fixed3 diffuseColor = tex2D(_Ramp, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb;
+
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;        
+                
+                fixed3 diffuse = _LightColor0.rgb * diffuseColor;
                 
                 fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
                 fixed3 halfDir = normalize(worldLightDir + viewDir);
-                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(i.worldNormal, halfDir)), _Gloss);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(worldNormal, halfDir)), _Gloss);
 
                 return fixed4(ambient + diffuse + specular, 1.0);
             }
