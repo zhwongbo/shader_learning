@@ -48,8 +48,9 @@ Shader "Abel/UnityShaderBook/Chapter6/Diffuse-Pixel-HalfLambert"
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
-                float3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
-                fixed halfLambert = 0.5 * dot(i.worldNormal, worldLightDir) + 0.5;
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+                fixed halfLambert = dot(worldNormal, worldLightDir) * 0.5 + 0.5;
                 fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb *  halfLambert;
                 fixed3 color = ambient + diffuse;
                 return fixed4(color, 1.0);

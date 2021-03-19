@@ -46,9 +46,9 @@ Shader "Abel/UnityShaderBook/Chapter6/Specular-Vertex-Level"
                 
                 fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 
-                float3 worldNormal = UnityObjectToWorldNormal(v.normal);
+                fixed3 worldNormal = normalize(UnityObjectToWorldNormal(v.normal));
                 float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-                float3 worldLightDir = normalize(UnityWorldSpaceLightDir(worldPos));
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(worldPos));
 
                 fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
 

@@ -52,11 +52,12 @@ Shader "Abel/UnityShaderBook/Chapter6/Specular-Pixel-Level"
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
-                float3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
-                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb *  saturate(dot(i.worldNormal, worldLightDir));
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb *  saturate(dot(worldNormal, worldLightDir));
                 
                 fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
-                fixed3 reflectDir = normalize(reflect(-worldLightDir, i.worldNormal));
+                fixed3 reflectDir = normalize(reflect(-worldLightDir, worldNormal));
                 fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)), _Gloss);
 
                 return fixed4(ambient + diffuse + specular, 1.0);

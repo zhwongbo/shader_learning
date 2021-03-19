@@ -61,12 +61,13 @@ Shader "Abel/UnityShaderBook/Chapter7/Single-Texture"
                 fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb; 
 
                 fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
-                float3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
-                fixed3 diffuse = _LightColor0.rgb * albedo.rgb *  saturate(dot(i.worldNormal, worldLightDir));
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+                fixed3 diffuse = _LightColor0.rgb * albedo.rgb *  saturate(dot(worldNormal, worldLightDir));
                 
                 fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
                 fixed3 halfDir = normalize(worldLightDir + viewDir);
-                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(i.worldNormal, halfDir)), _Gloss);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(worldNormal, halfDir)), _Gloss);
 
                 return fixed4(ambient + diffuse + specular, 1.0);
             }
