@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="14056c8d-e1f5-4e85-aefa-811e6963db65" name="Default Changelist" comment="" />
+    <list default="true" id="14056c8d-e1f5-4e85-aefa-811e6963db65" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/Assets/UnityShaderBook/Scenes/Chapter7/Scene_7_1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UnityShaderBook/Scenes/Chapter7/Scene_7_1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/UnityShaderBook/Shaders/Chapter7/NormalMapTangentSpace.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UnityShaderBook/Shaders/Chapter7/NormalMapTangentSpace.shader" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,6 +26,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="Discover.Launch.Via.Unity" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
@@ -41,6 +45,7 @@
       <updated>1616038090161</updated>
       <workItem from="1616038095515" duration="1739000" />
       <workItem from="1616048076128" duration="3000" />
+      <workItem from="1616131807152" duration="80000" />
     </task>
     <servers />
   </component>

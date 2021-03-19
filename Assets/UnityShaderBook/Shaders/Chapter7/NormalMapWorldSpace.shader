@@ -1,4 +1,4 @@
-Shader "Abel/UnityShaderBook/NormalMapTangentSpace"
+Shader "Abel/UnityShaderBook/NormalMapWorldSpace"
 {
     Properties
     {
@@ -48,8 +48,9 @@ Shader "Abel/UnityShaderBook/NormalMapTangentSpace"
             {
                 float4 pos : SV_POSITION;
                 float4 uv : TEXCOORD0;
-                float3 lightDir : TEXCOORD1;
-                float3 viewDir : TEXCOORD2;
+                float4 TtoW0 : TEXCOORD1;
+                float4 TtoW1 : TEXCOORD2;
+                float4 TtoW2 : TEXCOORD3;
             };
 
 
@@ -59,43 +60,40 @@ Shader "Abel/UnityShaderBook/NormalMapTangentSpace"
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv.xy = TRANSFORM_TEX(v.texcoord, _MainTex);
                 o.uv.zw = TRANSFORM_TEX(v.texcoord, _BumpMap);
-                // 计算副切线
-                // float3 binormal = cross(normalize(v.normal), normalize(v.tangent)) * v.tangent.w;
-                // 转换矩阵 (模型空间 切线 法线 副法线为坐标轴)坐标单位矢量放在每一列则为切线空间到模型空间，放在每一行则为模型空间到切线空间
-                // float3x3 rotation = float3x3(v.tangent.xyz, binormal, v.normal)
 
-                TANGENT_SPACE_ROTATION;
+                float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);
+                fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
+                fixed3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w;
 
-                // fragent与法线计算的为worldLightDir 与 worldViewDir，在此转换成切线空间下的值
-                o.lightDir = mul(rotation, ObjSpaceLightDir(v.vertex)).xyz;
-                o.viewDir = mul(rotation, ObjSpaceViewDir(v.vertex)).xyz;
+                o.TtoW0 = float4(worldTangent.x, worldBinormal.x, worldNormal.x, worldPos.x);
+                o.TtoW1 = float4(worldTangent.y, worldBinormal.y, worldNormal.y, worldPos.y);
+                o.TtoW2 = float4(worldTangent.z, worldBinormal.z, worldNormal.z, worldPos.z);
 
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed3 tangentLightDir = normalize(i.lightDir);
-                fixed3 tangentViewDir = normalize(i.viewDir); 
+                float3 worldPos = float3(i.TtoW0.w, i.TtoW1.w, i.TtoW2.w);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(worldPos));
+                fixed3 worldViewDir = normalize(UnityWorldSpaceViewDir(worldPos));
 
                 fixed4 packedNormal = tex2D(_BumpMap, i.uv.zw);
-                fixed3 tangentNormal;
-                // tangentNormal.xy = (packedNormal.xy * 2 - 1) * _BumpScale;
-                // tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
-
-                tangentNormal = UnpackNormal(packedNormal);
+                fixed3 tangentNormal = UnpackNormal(packedNormal);
                 tangentNormal.xy *= _BumpScale;
-                // 法线都是单位向量
+
                 tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
+                fixed3 worldNormal = normalize(half3(dot(i.TtoW0.xyz, tangentNormal), dot(i.TtoW1.xyz, tangentNormal), dot(i.TtoW2.xyz, tangentNormal)));
 
                 fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
 
                 fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;          
 
-                fixed3 diffuse = _LightColor0.rgb * albedo.rgb *  saturate(dot(tangentNormal, tangentLightDir));
+                fixed3 diffuse = _LightColor0.rgb * albedo.rgb *  saturate(dot(worldNormal, worldLightDir));
                 
-                fixed3 halfDir = normalize(tangentLightDir + tangentViewDir);
-                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(tangentNormal, halfDir)), _Gloss);
+                fixed3 halfDir = normalize(worldLightDir + worldViewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(worldNormal, halfDir)), _Gloss);
 
                 return fixed4(ambient + diffuse + specular, 1.0);
             }
