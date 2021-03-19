@@ -1,4 +1,4 @@
-Shader "Abel/UnityShaderBook/Specular-Pixel-BlinnPhong"
+Shader "Abel/UnityShaderBook/Chapter6/Specular-Pixel-BlinnPhong"
 {
     Properties
     {

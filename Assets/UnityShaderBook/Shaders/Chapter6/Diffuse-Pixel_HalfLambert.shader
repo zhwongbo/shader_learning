@@ -1,4 +1,4 @@
-Shader "Abel/UnityShaderBook/Diffuse-Pixel-HalfLambert"
+Shader "Abel/UnityShaderBook/Chapter6/Diffuse-Pixel-HalfLambert"
 {
     Properties
     {

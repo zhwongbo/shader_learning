@@ -1,4 +1,4 @@
-Shader "Abel/UnityShaderBook/Diffuse-Vertex-Level"
+Shader "Abel/UnityShaderBook/Chapter6/Diffuse-Vertex-Level"
 {
     Properties
     {

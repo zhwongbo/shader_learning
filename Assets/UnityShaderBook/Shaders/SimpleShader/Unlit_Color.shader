@@ -1,4 +1,4 @@
-Shader "Abel/Unlit/Color"
+Shader "Abel/UnityShaderBook/Chapter5/Color"
 {
     Properties
     {

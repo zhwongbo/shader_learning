@@ -1,4 +1,4 @@
-Shader "Abel/UnityShaderBook/NormalMapTangentSpace"
+Shader "Abel/UnityShaderBook/Chapter7/NormalMapTangentSpace"
 {
     Properties
     {

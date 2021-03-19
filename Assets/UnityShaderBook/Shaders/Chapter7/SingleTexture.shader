@@ -1,4 +1,4 @@
-Shader "Abel/UnityShaderBook/Single-Texture"
+Shader "Abel/UnityShaderBook/Chapter7/Single-Texture"
 {
     Properties
     {

@@ -1,4 +1,4 @@
-Shader "Abel/UnityShaderBook/Diffuse-Pixel-Level"
+Shader "Abel/UnityShaderBook/Chapter6/Diffuse-Pixel-Level"
 {
     Properties
     {

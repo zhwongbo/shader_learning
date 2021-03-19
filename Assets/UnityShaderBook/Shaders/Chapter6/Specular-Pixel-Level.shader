@@ -1,4 +1,4 @@
-Shader "Abel/UnityShaderBook/Specular-Pixel-Level"
+Shader "Abel/UnityShaderBook/Chapter6/Specular-Pixel-Level"
 {
     Properties
     {

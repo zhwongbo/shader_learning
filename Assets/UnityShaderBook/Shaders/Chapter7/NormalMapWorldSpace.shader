@@ -1,4 +1,4 @@
-Shader "Abel/UnityShaderBook/NormalMapWorldSpace"
+Shader "Abel/UnityShaderBook/Chapter7/NormalMapWorldSpace"
 {
     Properties
     {
