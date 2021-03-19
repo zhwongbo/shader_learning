@@ -13,11 +13,12 @@ Shader "Abel/UnityShaderBook/Chapter7/MaskTexture"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "LightMode" = "ForwardBase"}
+        Tags { "RenderType"="Opaque"}
         LOD 100
 
         Pass
         {
+            Tags {"LightMode" = "ForwardBase" }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag

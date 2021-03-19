@@ -7,12 +7,13 @@ Shader "Abel/UnityShaderBook/Chapter6/Diffuse-Pixel-HalfLambert"
 
     SubShader
     {
-        Tags { "Queue" = "Geometry" "LightMode" = "ForwardBase"}
+        Tags { "Queue" = "Geometry"}
 
         LOD 100
 
         Pass
         {
+            Tags {"LightMode" = "ForwardBase" }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
