@@ -22,6 +22,8 @@ Shader "Abel/UnityShaderBook/Chapter9/AlphaTestWithShadow"
             #pragma vertex vert
             #pragma fragment frag
 
+            #pragma multi_compile_fwdbase
+
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
