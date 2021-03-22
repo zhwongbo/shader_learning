@@ -134,7 +134,8 @@ Shader "Abel/UnityShaderBook/Chapter9/ForwardRendering"
 				//         fixed atten = 1.0;
 				//     #endif
                 // #endif
-
+                // 不仅处理了光照衰减 也处理了阴影值 最终得到的atten = 光照衰减 * 阴影值，传递进去的i用来传给SHADOW_ATTENUATION来计算阴影值，
+                // i.worldPos则会用于计算光源空间下的坐标，再对光照衰减纹理采样得到光照衰减
                 UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 
                 return fixed4((diffuse + specular) * atten, 1.0);

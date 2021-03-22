@@ -23,6 +23,7 @@ Shader "Abel/UnityShaderBook/Chapter9/Shadow"
 
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
+            #include "AutoLight.cginc"
 
             fixed4 _Diffuse;
             fixed4 _Specular;
@@ -39,6 +40,7 @@ Shader "Abel/UnityShaderBook/Chapter9/Shadow"
                 float4 pos : SV_POSITION;
                 float3 worldPos : TEXCOORD0;
                 float3 worldNormal : TEXCOORD1;
+                SHADOW_COORDS(2)
             };
 
 
@@ -48,6 +50,9 @@ Shader "Abel/UnityShaderBook/Chapter9/Shadow"
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+
+                TRANSFER_SHADOW(o);
+
                 return o;
             }
 
@@ -63,8 +68,9 @@ Shader "Abel/UnityShaderBook/Chapter9/Shadow"
                 fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(worldNormal, halfDir)), _Gloss);
 
                 fixed atten = 1.0;
+                fixed shadow = SHADOW_ATTENUATION(i);
 
-                return fixed4((ambient + diffuse + specular) * atten, 1.0);
+                return fixed4(ambient + (diffuse + specular) * atten * shadow, 1.0);
             }
             ENDCG
         }
@@ -155,6 +161,7 @@ Shader "Abel/UnityShaderBook/Chapter9/Shadow"
 
         //         struct v2f{
         //             V2F_SHADOW_CASTER;
+                    // float4 pos : SV_POSITION;
         //         };
 
         //         v2f vert(appdata_base v){

@@ -62,7 +62,7 @@ Shader "Abel/UnityShaderBook/Chapter7/NormalMapTangentSpace"
                 o.uv.zw = TRANSFORM_TEX(v.texcoord, _BumpMap);
                 // 计算副切线
                 // float3 binormal = cross(normalize(v.normal), normalize(v.tangent)) * v.tangent.w;
-                // 转换矩阵 (模型空间 切线 法线 副法线为坐标轴)坐标单位矢量放在每一列则为切线空间到模型空间，放在每一行则为模型空间到切线空间
+                // 转换矩阵 (模型空间 切线(x) 副法线(y) 法线(z) 为坐标轴)坐标单位矢量放在每一列则为切线空间到模型空间，放在每一行则为模型空间到切线空间
                 // float3x3 rotation = float3x3(v.tangent.xyz, binormal, v.normal)
 
                 TANGENT_SPACE_ROTATION;
