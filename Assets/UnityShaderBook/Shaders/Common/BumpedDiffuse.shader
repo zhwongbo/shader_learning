@@ -70,13 +70,14 @@ Shader "Abel/UnityShaderBook/BumpedDiffuse"
             {
                 fixed3 tangentNormal = UnpackNormal(tex2D(_BumpMap, i.uv.zw));
 
-                fixed3 tangentLightDir = normalize(UnityWorldSpaceLightDir(i.tangentLightDir));
+                fixed3 tangentLightDir = normalize(i.tangentLightDir);
 
                 fixed3 albedo = tex2D(_MainTex, i.uv.xy).rgb * _Color.rgb;
                 fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
-                fixed halfLambert = dot(tangentNormal, tangentLightDir) * 0.5 + 0.5;
-                fixed3 diffuse = _LightColor0.rgb * albedo * halfLambert;
-
+                // fixed halfLambert = dot(tangentNormal, tangentLightDir) * 0.5 + 0.5;
+                // fixed3 diffuse = _LightColor0.rgb * albedo * halfLambert;
+                
+                fixed3 diffuse = _LightColor0.rgb * albedo * saturate(dot(tangentNormal, tangentLightDir));
                 UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 
                 fixed3 color = ambient + diffuse * atten;
@@ -146,13 +147,14 @@ Shader "Abel/UnityShaderBook/BumpedDiffuse"
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed3 tangentNormal = UnpackNormal(tex2D(_BumpMap, i.uv.zw));
-                tangentNormal.z = sqrt(1- saturate(dot(tangentNormal.xy, tangentNormal.xy)));
 
-                fixed3 tangentLightDir = normalize(UnityWorldSpaceLightDir(i.tangentLightDir));
+                fixed3 tangentLightDir = normalize(i.tangentLightDir);
 
                 fixed3 albedo = tex2D(_MainTex, i.uv.xy).rgb * _Color.rgb;
-                fixed halfLambert = dot(tangentNormal, tangentLightDir) * 0.5 + 0.5;
-                fixed3 diffuse = _LightColor0.rgb * albedo * halfLambert;
+                // fixed halfLambert = dot(tangentNormal, tangentLightDir) * 0.5 + 0.5;
+                // fixed3 diffuse = _LightColor0.rgb * albedo * halfLambert;
+
+                fixed3 diffuse = _LightColor0.rgb * albedo * saturate(dot(tangentNormal, tangentLightDir));
 
                 UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);
 
