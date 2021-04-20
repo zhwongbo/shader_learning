@@ -11,6 +11,7 @@
 		"files.exclude": {
 			"**/*.mat": true,
 			"**/*.meta": true
-		}
+		},
+		"editor.snippetSuggestions": "bottom"
 	}
 }
